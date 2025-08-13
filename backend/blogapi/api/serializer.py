@@ -3,6 +3,8 @@ from .models import Comment, Tag, UserProfile, Article, ArticleUserLikes
 from django.contrib.auth.models import User
 from django.core.validators import RegexValidator
 from rest_framework import serializers
+from rest_framework.fields import HiddenField, SerializerMethodField
+from core.auth import CurrentProfileDefault, CurrentUserDefault
 
 
 class UserSerializer(ModelSerializer):
@@ -35,9 +37,15 @@ class UserSerializer(ModelSerializer):
 
 
 class CommentSerializer(ModelSerializer):
+    author = HiddenField(default=CurrentProfileDefault())
+    author_id = SerializerMethodField("get_author_id")
+
     class Meta:
         model = Comment
         fields = "__all__"
+
+    def get_author_id(self, obj):
+        return obj.author.id
 
 
 class TagSerializer(ModelSerializer):
@@ -47,18 +55,36 @@ class TagSerializer(ModelSerializer):
 
 
 class UserProfileSerializer(ModelSerializer):
+    user = HiddenField(default=CurrentUserDefault())
+    user_id = SerializerMethodField("get_user_id")
+
     class Meta:
         model = UserProfile
         fields = "__all__"
 
+    def get_user_id(self, obj):
+        return obj.user.id
+
 
 class ArticleSerializer(ModelSerializer):
+    author = HiddenField(default=CurrentProfileDefault())
+    author_id = SerializerMethodField("get_author_id")
+
     class Meta:
         model = Article
         fields = "__all__"
 
+    def get_author_id(self, obj):
+        return obj.author.id
+
 
 class ArticleUserLikesSerializer(ModelSerializer):
+    user = HiddenField(default=CurrentProfileDefault())
+    user_id = SerializerMethodField("get_user_id")
+
     class Meta:
         model = ArticleUserLikes
         fields = "__all__"
+
+    def get_user_id(self, obj):
+        return obj.user.id
