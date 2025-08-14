@@ -52,6 +52,8 @@ class ArticleViewSet(ModelViewSet):
     queryset = Article.objects.all()
     serializer_class = ArticleSerializer
     permission_classes = [ArticlesPermission]
+    
+    
 
 
 class ArticleUserLikesViewSet(ModelViewSet):

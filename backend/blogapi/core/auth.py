@@ -1,5 +1,6 @@
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from rest_framework_simplejwt.views import TokenObtainPairView
+from django.contrib.auth.models import User
+from api.models import UserProfile
 
 
 class BlogTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -20,11 +21,6 @@ def get_token_for_user(user):
 
 
 class CurrentUserDefault:
-    """
-    May be applied as a `default=...` value on a serializer field.
-    Returns the current user.
-    """
-
     requires_context = True
 
     def __call__(self, serializer_field):
@@ -32,12 +28,18 @@ class CurrentUserDefault:
 
 
 class CurrentProfileDefault:
-    """
-    May be applied as a `default=...` value on a serializer field.
-    Returns the current user.
-    """
-
     requires_context = True
 
     def __call__(self, serializer_field):
-        return serializer_field.context["request"].user.userprofile
+        user = serializer_field.context["request"].user
+
+        if user and user.is_authenticated and hasattr(user, "userprofile"):
+            return user.userprofile
+
+        anon_user = User.objects.get(username="anonymous")
+
+        anon_profile, _ = UserProfile.objects.get_or_create(
+            user=anon_user, defaults={"bio": "Anonymous user"}
+        )
+
+        return anon_profile

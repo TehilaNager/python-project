@@ -1,4 +1,6 @@
+import AppRoutes from "./routes/appRoutes";
 import Navbar from "./components/navbar";
+import Footer from "./components/footer";
 
 function App() {
   return (
@@ -6,8 +8,15 @@ function App() {
       <header>
         <Navbar />
       </header>
-      <main className="flex-fill pb-5">Main</main>
-      <footer>Footer</footer>
+      <main
+        className="flex-fill pb-5"
+        style={{ backgroundColor: "rgba(238, 240, 240, 1)" }}
+      >
+        <AppRoutes />
+      </main>
+      <footer>
+        <Footer />
+      </footer>
     </div>
   );
 }
