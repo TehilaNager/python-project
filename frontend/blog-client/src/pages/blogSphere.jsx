@@ -1,6 +1,7 @@
 import PageHeader from "../components/common/pageHeader";
 import Card from "../components/card";
 import { useArticles } from "../context/articleContext";
+import { Link } from "react-router";
 
 function BlogSphere() {
   const { articles } = useArticles();
@@ -16,6 +17,11 @@ function BlogSphere() {
           <p className="fs-3">No articles...</p>
         )}
       </div>
+
+      <Link
+        className="btn-add-article btn btn-warning rounded-circle p-4 lh-1 bi bi-plus-lg"
+        to="/create-article"
+      ></Link>
     </div>
   );
 }

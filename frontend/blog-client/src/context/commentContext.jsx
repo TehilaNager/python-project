@@ -4,7 +4,9 @@ const commentContext = createContext();
 commentContext.displayName = "Comments";
 
 export function CommentsProvider({ children }) {
-  return <commentContext.Provider>{children}</commentContext.Provider>;
+  return (
+    <commentContext.Provider value={{}}>{children}</commentContext.Provider>
+  );
 }
 
 export function useComments() {
