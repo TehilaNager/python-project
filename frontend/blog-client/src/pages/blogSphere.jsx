@@ -17,7 +17,7 @@ function BlogSphere() {
           <p className="fs-3">No articles...</p>
         )}
       </div>
-
+      {/* לתת הרשאה רק למנהל */}
       <Link
         className="btn-add-article btn btn-warning rounded-circle p-4 lh-1 bi bi-plus-lg"
         to="/create-article"
