@@ -6,11 +6,17 @@ import App from "./App.jsx";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap/dist/js/bootstrap.bundle";
 import "bootstrap-icons/font/bootstrap-icons.css";
+import { CommentsProvider } from "./context/commentContext.jsx";
+import { ArticlesProvider } from "./context/articleContext.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
-      <App />
+      <CommentsProvider>
+        <ArticlesProvider>
+          <App />
+        </ArticlesProvider>
+      </CommentsProvider>
     </BrowserRouter>
   </StrictMode>
 );

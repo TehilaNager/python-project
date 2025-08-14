@@ -4,7 +4,7 @@ import config from "../config.json"
 axios.defaults.baseURL = config.apiUrl;
 
 function setDefaulHeaders(headerName, value) {
-    return axios.defaults.headers.common[headerName] = `Bearer ${value}`;
+    return axios.defaults.headers.common[headerName] = value;
 }
 
 const httpService = {

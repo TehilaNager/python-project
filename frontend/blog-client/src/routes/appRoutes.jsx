@@ -10,7 +10,7 @@ function AppRoutes() {
       <Route path="/" element={<BlogSphere />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
-      <Route path="/article-details/:id" element={<ArticleDetails />} />
+      {/* <Route path="/article-details/:id" element={<ArticleDetails />} /> */}
     </Routes>
   );
 }
