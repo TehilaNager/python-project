@@ -1,9 +1,8 @@
 from rest_framework.viewsets import ModelViewSet, ViewSet
 from rest_framework.permissions import AllowAny
 from rest_framework.decorators import action
-from core.auth import get_token_for_user
 from rest_framework.response import Response
-from rest_framework.authtoken.serializers import AuthTokenSerializer
+from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth.models import User
 from .models import UserProfile, Tag, Comment, Article, ArticleUserLikes
 from .serializer import (
@@ -52,8 +51,6 @@ class ArticleViewSet(ModelViewSet):
     queryset = Article.objects.all()
     serializer_class = ArticleSerializer
     permission_classes = [ArticlesPermission]
-    
-    
 
 
 class ArticleUserLikesViewSet(ModelViewSet):
@@ -70,37 +67,26 @@ class AuthViewSet(ViewSet):
     def list(self, request):
         return Response(
             {
-                "login": "http://127.0.0.1:8000/api/auth/login",
                 "register": "http://127.0.0.1:8000/api/auth/register",
+                "login": "http://127.0.0.1:8000/api/token/",
+                "refresh": "http://127.0.0.1:8000/api/token/refresh/",
             }
         )
 
-    @action(methods=["post", "get"], detail=False)
+    @action(methods=["post"], detail=False)
     def register(self, request):
         serializer = UserSerializer(data=request.data)
-
         serializer.is_valid(raise_exception=True)
-
         user = serializer.save()
 
-        jwt = get_token_for_user(user)
+        UserProfile.objects.get_or_create(user=user)
 
-        UserProfile.objects.get_or_create(user)
-
+        refresh = RefreshToken.for_user(user)
         return Response(
-            {"message": "Registered successfully", "user": serializer.data, **jwt}
+            {
+                "message": "Registered successfully",
+                "user": serializer.data,
+                "refresh": str(refresh),
+                "access": str(refresh.access_token),
+            }
         )
-
-    @action(methods=["post", "get"], detail=False)
-    def login(self, request):
-        serializer = AuthTokenSerializer(
-            data=request.data, context={"request": request}
-        )
-
-        serializer.is_valid(raise_exception=True)
-
-        user = serializer.validated_data["user"]
-
-        jwt = get_token_for_user(user)
-
-        return Response(jwt)

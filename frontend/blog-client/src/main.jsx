@@ -10,13 +10,13 @@ import { CommentsProvider } from "./context/commentContext.jsx";
 import { ArticlesProvider } from "./context/articleContext.jsx";
 
 createRoot(document.getElementById("root")).render(
-  <StrictMode>
-    <BrowserRouter>
-      <CommentsProvider>
-        <ArticlesProvider>
-          <App />
-        </ArticlesProvider>
-      </CommentsProvider>
-    </BrowserRouter>
-  </StrictMode>
+  // <StrictMode>
+  <BrowserRouter>
+    <CommentsProvider>
+      <ArticlesProvider>
+        <App />
+      </ArticlesProvider>
+    </CommentsProvider>
+  </BrowserRouter>
+  // </StrictMode>
 );
