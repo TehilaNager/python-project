@@ -1,13 +1,15 @@
 import { useState } from "react";
 import { useFormik } from "formik";
+import { useNavigate } from "react-router";
 import PageHeader from "../components/common/pageHeader";
 import Input from "../components/common/input";
 import FormButtons from "../components/common/formButtons";
 import registerSchema from "../schemas/registerSchema";
 import userService from "../services/userService";
-import { successFeedback } from "../helpers/feedback";
+import { successFeedback, errorFeedback } from "../helpers/feedback";
 
 function Register() {
+  const navigate = useNavigate();
   const [serverError, setServerError] = useState("");
 
   const {
@@ -39,16 +41,39 @@ function Register() {
     },
     onSubmit: async (values) => {
       try {
-        await userService.register(values);
-        successFeedback("Registration successful!");
+        const data = await userService.register(values);
+
+        await userService.login({
+          username: values.username,
+          password: values.password,
+        });
+
+        successFeedback(
+          `Registration successful. Welcome ${data.user.username}!`
+        );
         resetForm();
+        navigate("/");
       } catch (err) {
-        const data = err.response.data;
+        errorFeedback("Oops");
+        const data = err.response?.data || {};
         const serverErrors = {};
 
         if (data.username) serverErrors.username = data.username;
         if (data.email) serverErrors.email = data.email;
         if (data.password) serverErrors.password = data.password;
+
+        if (
+          !data?.username &&
+          !data?.email &&
+          !data?.password &&
+          data?.message
+        ) {
+          setServerError(data.message);
+        } else if (!data?.username && !data?.email && !data?.password) {
+          setServerError(
+            "Service temporarily unavailable. Please try again later."
+          );
+        }
 
         setErrors(serverErrors);
       } finally {

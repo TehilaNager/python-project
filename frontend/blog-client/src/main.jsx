@@ -8,15 +8,17 @@ import "bootstrap/dist/js/bootstrap.bundle";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import { CommentsProvider } from "./context/commentContext.jsx";
 import { ArticlesProvider } from "./context/articleContext.jsx";
+import { ToastContainer } from "react-toastify";
 
 createRoot(document.getElementById("root")).render(
-  // <StrictMode>
-  <BrowserRouter>
-    <CommentsProvider>
-      <ArticlesProvider>
-        <App />
-      </ArticlesProvider>
-    </CommentsProvider>
-  </BrowserRouter>
-  // </StrictMode>
+  <StrictMode>
+    <BrowserRouter>
+      <CommentsProvider>
+        <ArticlesProvider>
+          <ToastContainer />
+          <App />
+        </ArticlesProvider>
+      </CommentsProvider>
+    </BrowserRouter>
+  </StrictMode>
 );
