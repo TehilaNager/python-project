@@ -9,16 +9,19 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 import { CommentsProvider } from "./context/commentContext.jsx";
 import { ArticlesProvider } from "./context/articleContext.jsx";
 import { ToastContainer } from "react-toastify";
+import { AuthProvider } from "./context/authContext.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
-      <CommentsProvider>
-        <ArticlesProvider>
-          <ToastContainer />
-          <App />
-        </ArticlesProvider>
-      </CommentsProvider>
+      <AuthProvider>
+        <CommentsProvider>
+          <ArticlesProvider>
+            <ToastContainer />
+            <App />
+          </ArticlesProvider>
+        </CommentsProvider>
+      </AuthProvider>
     </BrowserRouter>
   </StrictMode>
 );

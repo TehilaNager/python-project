@@ -1,9 +1,12 @@
+import { useAuth } from "../context/authContext";
 import Logo from "./common/logo";
 import { NavLink } from "react-router";
 
 function Navbar() {
+  const { isLoggedIn, logout } = useAuth();
+
   return (
-    <nav className="navbar navbar-expand-md navbar-dark bg-dark shadow-sm">
+    <nav className="navbar navbar-expand-md navbar-dark bg-dark shadow-sm fixed-top">
       <div className="container">
         <Logo />
 
@@ -20,7 +23,7 @@ function Navbar() {
         </button>
 
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
-          <form className="d-flex position-relative me-5 ms-auto" role="search">
+          <form className="d-flex position-relative me-4 ms-auto" role="search">
             <i
               className="bi bi-search text-secondary position-absolute"
               style={{
@@ -41,33 +44,39 @@ function Navbar() {
           </form>
 
           <ul className="navbar-nav mb-2 mb-md-0">
-            <li className="nav-item">
-              <NavLink
-                className="nav-link fw-semibold fs-6 px-3"
-                to="/login"
-                style={{ fontSize: "1.05rem" }}
-              >
-                Login
-              </NavLink>
-            </li>
-            <li className="nav-item">
-              <NavLink
-                className="nav-link fw-semibold fs-6 px-3"
-                to="/register"
-                style={{ fontSize: "1.05rem" }}
-              >
-                Register
-              </NavLink>
-            </li>
-            {/* <li className="nav-item">
-              <NavLink
-                className="nav-link fw-semibold fs-6 px-3"
-                to="/register"
-                style={{ fontSize: "1.05rem" }}
-              >
-                Logout
-              </NavLink>
-            </li> */}
+            {isLoggedIn ? (
+              <li className="nav-item">
+                <button
+                  className="nav-link fw-semibold fs-6 px-3"
+                  style={{ fontSize: "1.05rem" }}
+                  onClick={logout}
+                >
+                  <i className="bi bi-box-arrow-right me-1"></i>
+                  Logout
+                </button>
+              </li>
+            ) : (
+              <>
+                <li className="nav-item">
+                  <NavLink
+                    className="nav-link fw-semibold fs-6 px-4"
+                    to="/login"
+                    style={{ fontSize: "1.05rem" }}
+                  >
+                    <i className="bi bi-person me-1"></i> Login
+                  </NavLink>
+                </li>
+                <li className="nav-item">
+                  <NavLink
+                    className="nav-link fw-semibold fs-6 px-4"
+                    to="/register"
+                    style={{ fontSize: "1.05rem" }}
+                  >
+                    <i className="bi bi-person-plus me-1"></i> Register
+                  </NavLink>
+                </li>
+              </>
+            )}
           </ul>
         </div>
       </div>

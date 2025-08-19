@@ -1,4 +1,4 @@
-import httpService from "./httpSrvice";
+import httpService from "./httpService";
 
 async function getAllArticles() {
     const response = await httpService.get("/articles/")

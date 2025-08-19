@@ -5,11 +5,12 @@ import PageHeader from "../components/common/pageHeader";
 import Input from "../components/common/input";
 import FormButtons from "../components/common/formButtons";
 import registerSchema from "../schemas/registerSchema";
-import userService from "../services/userService";
 import { successFeedback, errorFeedback } from "../helpers/feedback";
+import { useAuth } from "../context/authContext";
 
 function Register() {
   const navigate = useNavigate();
+  const { register } = useAuth();
   const [serverError, setServerError] = useState("");
 
   const {
@@ -41,16 +42,8 @@ function Register() {
     },
     onSubmit: async (values) => {
       try {
-        const data = await userService.register(values);
-
-        await userService.login({
-          username: values.username,
-          password: values.password,
-        });
-
-        successFeedback(
-          `Registration successful. Welcome ${data.user.username}!`
-        );
+        await register(values);
+        successFeedback(`Registration successful. Welcome ${values.username}!`);
         resetForm();
         navigate("/");
       } catch (err) {

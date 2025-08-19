@@ -1,19 +1,72 @@
+import { useNavigate } from "react-router";
+import { useFormik } from "formik";
 import PageHeader from "../components/common/pageHeader";
 import Input from "../components/common/input";
 import FormButtons from "../components/common/formButtons";
+import loginSchema from "../schemas/loginSchema";
+import { successFeedback, errorFeedback } from "../helpers/feedback";
+import { useState } from "react";
+import { useAuth } from "../context/authContext";
 
 function Login() {
+  const navigate = useNavigate();
+  const { login } = useAuth();
+  const [serverError, setServerError] = useState("");
+
+  const {
+    handleSubmit,
+    getFieldProps,
+    resetForm,
+    setSubmitting,
+    setErrors,
+    touched,
+    errors,
+    isValid,
+  } = useFormik({
+    validateOnMount: true,
+    initialValues: {
+      username: "",
+      password: "",
+    },
+    validate: (values) => {
+      const schema = loginSchema();
+      const { error } = schema.validate(values, { abortEarly: false });
+      if (!error) return null;
+      const errors = {};
+      for (const detail of error.details) {
+        errors[detail.path[0]] = detail.message;
+      }
+      return errors;
+    },
+    onSubmit: async (values) => {
+      try {
+        await login(values);
+        successFeedback(`Login successful. Welcome ${values.username}!`);
+        resetForm();
+        navigate("/");
+      } catch (err) {
+        errorFeedback("Oops");
+        const response = err.response.data.detail;
+        setServerError(response);
+      } finally {
+        setSubmitting(false);
+      }
+    },
+  });
+
   return (
     <div className="container col-10 col-md-4">
       <PageHeader title="Login" classTitle="my-5 text-center fw-bold" />
 
-      <form>
+      <form onSubmit={handleSubmit} noValidate autoComplete="off">
         <div className="d-grid gap-4 mb-5">
           <Input
             label="User Name"
             type="text"
             placeholder="Tehila Nagar"
             required
+            {...getFieldProps("username")}
+            error={touched.username && errors.username}
           />
 
           <Input
@@ -21,10 +74,18 @@ function Login() {
             type="password"
             placeholder="AAAaaa111@"
             required
+            {...getFieldProps("password")}
+            error={touched.password && errors.password}
           />
         </div>
 
-        <FormButtons />
+        {serverError && (
+          <div className="alert alert-danger" role="alert">
+            {serverError}
+          </div>
+        )}
+
+        <FormButtons onReset={resetForm} disabled={!isValid} />
       </form>
     </div>
   );

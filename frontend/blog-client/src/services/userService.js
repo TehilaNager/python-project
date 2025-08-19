@@ -1,4 +1,4 @@
-import httpService from "./httpSrvice";
+import httpService from "./httpService";
 
 async function register(values) {
     const response = await httpService.post("/register/", values)
@@ -29,10 +29,17 @@ async function refreshToken() {
     return newAccess;
 }
 
+function logOut() {
+    localStorage.removeItem("access");
+    localStorage.removeItem("refresh");
+    httpService.setDefaulHeaders("Authorization", "");
+}
+
 const userService = {
     register,
     login,
-    refreshToken
+    refreshToken,
+    logOut
 }
 
 export default userService;
