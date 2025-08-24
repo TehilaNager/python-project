@@ -39,6 +39,7 @@ class UserSerializer(ModelSerializer):
 class CommentSerializer(ModelSerializer):
     author = HiddenField(default=CurrentProfileDefault())
     author_id = SerializerMethodField("get_author_id")
+    username = serializers.CharField(source="author.user.username", read_only=True)
 
     class Meta:
         model = Comment
@@ -69,6 +70,10 @@ class UserProfileSerializer(ModelSerializer):
 class ArticleSerializer(ModelSerializer):
     author = HiddenField(default=CurrentProfileDefault())
     author_id = SerializerMethodField("get_author_id")
+    author_username = serializers.CharField(
+        source="author.user.username", read_only=True
+    )
+    tags_names = SerializerMethodField()
 
     class Meta:
         model = Article
@@ -76,6 +81,9 @@ class ArticleSerializer(ModelSerializer):
 
     def get_author_id(self, obj):
         return obj.author.id
+
+    def get_tags_names(self, obj):
+        return [tag.name for tag in obj.tags.all()]
 
 
 class ArticleUserLikesSerializer(ModelSerializer):

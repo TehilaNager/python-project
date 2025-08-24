@@ -10,9 +10,14 @@ export function AuthProvider({ children }) {
   );
 
   async function login(values) {
-    const data = await userService.login(values);
-    setIsLoggedIn(true);
-    return data;
+    try {
+      const data = await userService.login(values);
+      setIsLoggedIn(true);
+      return data;
+    } catch (error) {
+      setIsLoggedIn(false);
+      throw error;
+    }
   }
 
   async function register(values) {
@@ -26,8 +31,13 @@ export function AuthProvider({ children }) {
     setIsLoggedIn(false);
   }
 
+  const getUser = () => userService.getUser();
+  const isAdmin = () => userService.isAdmin();
+
   return (
-    <authContext.Provider value={{ isLoggedIn, login, register, logout }}>
+    <authContext.Provider
+      value={{ isLoggedIn, login, register, logout, getUser, isAdmin }}
+    >
       {children}
     </authContext.Provider>
   );

@@ -80,10 +80,7 @@ function Register() {
       <PageHeader title="Register" classTitle="my-5 text-center fw-bold" />
 
       <form onSubmit={handleSubmit} noValidate autoComplete="off">
-        <div
-          style={{ gridTemplateColumns: "1fr 1fr" }}
-          className="d-grid gap-3"
-        >
+        <div className="form-register">
           <Input
             label="User Name"
             type="text"

@@ -46,8 +46,15 @@ function Login() {
         navigate("/");
       } catch (err) {
         errorFeedback("Oops");
-        const response = err.response.data.detail;
-        setServerError(response);
+        const responseGeneral = err.response.data.detail;
+        const data = err.response?.data || {};
+        const serverErrors = {};
+
+        if (data.username) serverErrors.username = data.username;
+        if (data.password) serverErrors.password = data.password;
+
+        setServerError(responseGeneral);
+        setErrors(serverErrors);
       } finally {
         setSubmitting(false);
       }
@@ -59,7 +66,7 @@ function Login() {
       <PageHeader title="Login" classTitle="my-5 text-center fw-bold" />
 
       <form onSubmit={handleSubmit} noValidate autoComplete="off">
-        <div className="d-grid gap-4 mb-5">
+        <div className="d-grid form-login">
           <Input
             label="User Name"
             type="text"

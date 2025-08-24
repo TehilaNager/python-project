@@ -3,7 +3,8 @@ import Logo from "./common/logo";
 import { NavLink } from "react-router";
 
 function Navbar() {
-  const { isLoggedIn, logout } = useAuth();
+  const { isLoggedIn, logout, getUser } = useAuth();
+  const userName = getUser()?.username;
 
   return (
     <nav className="navbar navbar-expand-md navbar-dark bg-dark shadow-sm fixed-top">
@@ -45,16 +46,43 @@ function Navbar() {
 
           <ul className="navbar-nav mb-2 mb-md-0">
             {isLoggedIn ? (
-              <li className="nav-item">
-                <button
-                  className="nav-link fw-semibold fs-6 px-3"
-                  style={{ fontSize: "1.05rem" }}
-                  onClick={logout}
+              <div
+                className="dropdown text-center"
+                style={{ display: "inline-block", position: "relative" }}
+              >
+                <img
+                  src="https://cdn-icons-png.flaticon.com/512/1896/1896513.png"
+                  alt="Profile"
+                  className="dropdown-toggle mx-3"
+                  data-bs-toggle="dropdown"
+                  style={{
+                    width: "50px",
+                    cursor: "pointer",
+                    borderRadius: "50%",
+                  }}
+                />
+                <ul
+                  className="dropdown-menu shadow text-center"
+                  style={{
+                    position: "absolute",
+                    top: "60px",
+                    left: "50%",
+                    transform: "translateX(-50%)",
+                  }}
                 >
-                  <i className="bi bi-box-arrow-right me-1"></i>
-                  Logout
-                </button>
-              </li>
+                  <li className="border-bottom text-primary-emphasis fw-semibold py-2 rounded-top">
+                    <i className="bi bi-person-circle me-1"></i> {userName}
+                  </li>
+                  <li>
+                    <button
+                      className="dropdown-item text-danger px-4 py-2"
+                      onClick={logout}
+                    >
+                      <i className="bi bi-box-arrow-right me-1"></i> Log out
+                    </button>
+                  </li>
+                </ul>
+              </div>
             ) : (
               <>
                 <li className="nav-item">

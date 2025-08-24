@@ -1,5 +1,5 @@
 from rest_framework.routers import DefaultRouter
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from rest_framework_simplejwt.views import TokenRefreshView
 from django.urls import path
 from .views import (
     UserViewSet,
@@ -9,6 +9,7 @@ from .views import (
     CommentViewSet,
     TagViewSet,
     AuthViewSet,
+    BlogTokenObtainPairView,
 )
 
 router = DefaultRouter()
@@ -22,7 +23,7 @@ router.register("users", UserViewSet, basename="users")
 
 urlpatterns = [
     path("register/", AuthViewSet.as_view({"post": "register"}), name="register"),
-    path("token/", TokenObtainPairView.as_view(), name="token"),
+    path("token/", BlogTokenObtainPairView.as_view(), name="token"),
     path("token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
 ]
 

@@ -1,6 +1,9 @@
 from rest_framework.viewsets import ModelViewSet, ViewSet
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework_simplejwt.views import TokenObtainPairView
+from core.auth import BlogTokenObtainPairSerializer
 from rest_framework.decorators import action
+from rest_framework import filters, status
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth.models import User
@@ -51,6 +54,36 @@ class ArticleViewSet(ModelViewSet):
     queryset = Article.objects.all()
     serializer_class = ArticleSerializer
     permission_classes = [ArticlesPermission]
+    filter_backends = [filters.SearchFilter]
+    search_fields = [
+        "title",
+        "text",
+        "tags__name",
+        "author__user__username",
+    ]
+
+    @action(
+        detail=True,
+        methods=["get", "post"],
+        url_path="comments",
+        permission_classes=[IsAuthenticated],
+    )
+    def comments(self, request, pk=None):
+        article = self.get_object()
+
+        if request.method == "GET":
+            comments = Comment.objects.filter(article=article)
+            serializer = CommentSerializer(comments, many=True)
+            return Response(serializer.data)
+
+        if request.method == "POST":
+            data = request.data.copy()
+            data["article"] = article.id
+            serializer = CommentSerializer(data=data, context={"request": request})
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ArticleUserLikesViewSet(ModelViewSet):
@@ -90,3 +123,7 @@ class AuthViewSet(ViewSet):
                 "access": str(refresh.access_token),
             }
         )
+
+
+class BlogTokenObtainPairView(TokenObtainPairView):
+    serializer_class = BlogTokenObtainPairSerializer

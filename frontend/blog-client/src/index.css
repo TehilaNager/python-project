@@ -97,7 +97,20 @@ body {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-@media (max-width: 600px) {
+.form-register {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr 1fr;
+}
+.form-login {
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+@media (max-width: 768px) {
+  body {
+    padding-top: 60px;
+  }
   .article-card {
     padding: 25px;
   }
@@ -106,5 +119,17 @@ body {
   }
   .article-meta {
     gap: 10px;
+  }
+  .form-register {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+  .form-login {
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+  .article-container {
+    width: 95% !important;
   }
 }

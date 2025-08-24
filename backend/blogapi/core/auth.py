@@ -8,6 +8,7 @@ class BlogTokenObtainPairSerializer(TokenObtainPairSerializer):
     def get_token(cls, user):
         token = super().get_token(user)
         token["isadmin"] = user.is_superuser
+        token["username"] = user.username
 
         return token
 
