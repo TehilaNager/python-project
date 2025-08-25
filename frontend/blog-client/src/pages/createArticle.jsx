@@ -3,22 +3,98 @@ import Input from "../components/common/input";
 import FormButtons from "../components/common/formButtons";
 import { useTag } from "../context/tagContext";
 import { useFormik } from "formik";
+import createArticleSchema from "../schemas/createArticleSchema";
+import { useArticles } from "../context/articleContext";
+import { errorFeedback, successFeedback } from "../helpers/feedback";
+import { useState } from "react";
+import Select from "react-select";
+import { useNavigate } from "react-router";
 
 function CreateArticle() {
+  const navigate = useNavigate();
   const { tags } = useTag();
+  const { createArticle } = useArticles();
+  const [serverError, setServerError] = useState("");
 
-  const { handleSubmit, getFieldProps, resetForm, isValid, touched, errors } =
-    useFormik({
-      initialValues: {
-        title: "",
-        text: "",
-        status: "draft",
-        tags: [],
-      },
-      onSubmit: (values) => {
-        console.log("Form values:", values);
-      },
-    });
+  const {
+    handleSubmit,
+    getFieldProps,
+    resetForm,
+    setErrors,
+    setSubmitting,
+    setFieldValue,
+    isValid,
+    touched,
+    errors,
+  } = useFormik({
+    validateOnMount: true,
+    initialValues: {
+      title: "",
+      text: "",
+      status: "draft",
+      tags: [],
+    },
+    validate: (values) => {
+      const schema = createArticleSchema();
+      const { error } = schema.validate(values, { abortEarly: false });
+      if (!error) return null;
+      const errors = {};
+      for (const detail of error.details) {
+        errors[detail.path[0]] = detail.message;
+      }
+      return errors;
+    },
+    onSubmit: async (values) => {
+      try {
+        await createArticle(values);
+        resetForm();
+        navigate("/");
+        successFeedback(
+          `Article created successfully! Title: "${values.title}"`
+        );
+      } catch (err) {
+        errorFeedback("Oops");
+        const data = err.response?.data || {};
+        const serverErrors = {};
+
+        if (data.title) serverErrors.title = data.title;
+        if (data.text) serverErrors.text = data.text;
+        if (data.status) serverErrors.status = data.status;
+        if (data.tags) serverErrors.tags = data.tags;
+
+        if (
+          !data?.title &&
+          !data?.text &&
+          !data?.status &&
+          !data?.tags &&
+          data?.message
+        ) {
+          setServerError(data.message);
+        } else if (
+          !data?.title &&
+          !data?.text &&
+          !data?.status &&
+          !data?.tags
+        ) {
+          setServerError(
+            "Service temporarily unavailable. Please try again later."
+          );
+        }
+
+        setErrors(serverErrors);
+      } finally {
+        setSubmitting(false);
+      }
+    },
+  });
+
+  const tagsOptions = tags.map((tag) => ({ value: tag.id, label: tag.name }));
+
+  const statusOptions = [
+    { value: "draft", label: "Draft" },
+    { value: "published", label: "Published" },
+    { value: "archived", label: "Archived" },
+  ];
 
   return (
     <div className="container col-11 col-md-7">
@@ -48,16 +124,25 @@ function CreateArticle() {
         <label htmlFor="status" className="px-2 mb-2 text-secondary">
           Status:
         </label>
-        <select
-          id="status"
-          {...getFieldProps("status")}
-          className="px-3 py-2 rounded-3 mb-4 border-0"
-          style={{ width: "100%" }}
-        >
-          <option value="draft">Draft</option>
-          <option value="published">Published</option>
-          <option value="archived">Archived</option>
-        </select>
+
+        <Select
+          styles={{
+            singleValue: (provided) => ({
+              ...provided,
+              color: "#808080ff",
+            }),
+          }}
+          options={statusOptions}
+          className="mb-3"
+          classNamePrefix="select"
+          placeholder="Select status..."
+          value={statusOptions.find(
+            (option) => option.value === getFieldProps("status").value
+          )}
+          onChange={(selectedOption) =>
+            setFieldValue("status", selectedOption.value)
+          }
+        />
 
         {touched.status && errors.status && (
           <div className="text-danger">{errors.status}</div>
@@ -66,24 +151,38 @@ function CreateArticle() {
         <label htmlFor="tags" className="px-2 mb-2 text-secondary">
           Tags:
         </label>
-        <select
-          id="tags"
-          multiple
-          className="px-3 py-2 rounded-3 mb-4 border-0"
-          style={{ width: "100%", height: "auto" }}
-        >
-          {tags.map((tag) => (
-            <option key={tag.id} value={tag.id}>
-              {tag.name}
-            </option>
-          ))}
-        </select>
+
+        <Select
+          isMulti
+          options={tagsOptions}
+          className="mb-5"
+          classNamePrefix="select"
+          placeholder="Select tags..."
+          value={tagsOptions.filter((option) =>
+            getFieldProps("tags").value.includes(option.value)
+          )}
+          onChange={(selectedOptions) =>
+            setFieldValue(
+              "tags",
+              selectedOptions
+                ? selectedOptions.map((option) => option.value)
+                : []
+            )
+          }
+        />
 
         {touched.tags && errors.tags && (
           <div className="text-danger">{errors.tags}</div>
         )}
+
+        {serverError && (
+          <div className="alert alert-danger" role="alert">
+            {serverError}
+          </div>
+        )}
+
+        <FormButtons onReset={resetForm} disabled={!isValid} />
       </form>
-      <FormButtons onReset={resetForm} disabled={!isValid} />
     </div>
   );
 }

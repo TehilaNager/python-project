@@ -6,7 +6,22 @@ function ManageTags() {
 
   return (
     <div className="container col-11 col-md-6">
-      <PageHeader title="Manage Tags" classTitle="my-5 text-center fw-bold" />
+      <PageHeader
+        title="Manage Tags"
+        classTitle="mt-5 mb-3 text-center fw-bold"
+      />
+
+      <p
+        style={{
+          color: "#6c757d",
+          textAlign: "center",
+          marginBottom: "2rem",
+          fontSize: "1.1rem",
+        }}
+      >
+        Tags are used to categorize your articles. Create new tags here and
+        later, when creating an article, you can select which tags apply to it.
+      </p>
 
       <div className="mb-3 d-flex">
         <input

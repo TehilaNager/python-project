@@ -16,8 +16,13 @@ export function ArticlesProvider({ children }) {
     fetchArticles();
   }, []);
 
+  const createArticle = async (values) => {
+    const response = await articlesService.createArticle(values);
+    setArticles([...articles, response]);
+  };
+
   return (
-    <articleContext.Provider value={{ articles }}>
+    <articleContext.Provider value={{ articles, createArticle }}>
       {children}
     </articleContext.Provider>
   );
