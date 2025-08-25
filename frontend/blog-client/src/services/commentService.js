@@ -23,7 +23,6 @@ async function fetchCommentsByArticle(id) {
 // יש הרשאה רק למנהל, צריך בדיקה מהטוקן שזה מנהל
 async function deleteComment(id) {
     await httpService.delete(`/comments/${id}/`);
-    console.log({ message: "The comment was successfully deleted." });
     return { message: "The comment was successfully deleted." };
 };
 

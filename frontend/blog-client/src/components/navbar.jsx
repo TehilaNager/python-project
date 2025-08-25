@@ -3,13 +3,24 @@ import Logo from "./common/logo";
 import { NavLink } from "react-router";
 
 function Navbar() {
-  const { isLoggedIn, logout, getUser } = useAuth();
+  const { isLoggedIn, logout, getUser, isAdmin } = useAuth();
   const userName = getUser()?.username;
+  const admin = isAdmin();
 
   return (
     <nav className="navbar navbar-expand-md navbar-dark bg-dark shadow-sm fixed-top">
       <div className="container">
         <Logo />
+
+        {admin && (
+          <NavLink
+            to="/manage-tags"
+            className="nav-link fw-semibold fs-6 px-4 text-white"
+            style={{ fontSize: "1.2rem" }}
+          >
+            Manage Tags
+          </NavLink>
+        )}
 
         <button
           className="navbar-toggler"

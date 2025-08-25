@@ -4,6 +4,7 @@ import Register from "../pages/register";
 import BlogSphere from "../pages/blogSphere";
 import ArticleDetails from "../pages/articleDetails";
 import CreateArticle from "../pages/createArticle";
+import ManageTags from "../pages/manageTags";
 
 function AppRoutes() {
   return (
@@ -13,6 +14,7 @@ function AppRoutes() {
       <Route path="/register" element={<Register />} />
       <Route path="/article-details/:id" element={<ArticleDetails />} />
       <Route path="/create-article/" element={<CreateArticle />} />
+      <Route path="//manage-tags" element={<ManageTags />} />
     </Routes>
   );
 }

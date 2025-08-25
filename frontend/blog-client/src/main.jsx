@@ -10,17 +10,20 @@ import { CommentsProvider } from "./context/commentContext.jsx";
 import { ArticlesProvider } from "./context/articleContext.jsx";
 import { ToastContainer } from "react-toastify";
 import { AuthProvider } from "./context/authContext.jsx";
+import { TagProvider } from "./context/tagContext.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
       <AuthProvider>
-        <CommentsProvider>
-          <ArticlesProvider>
-            <ToastContainer />
-            <App />
-          </ArticlesProvider>
-        </CommentsProvider>
+        <ArticlesProvider>
+          <CommentsProvider>
+            <TagProvider>
+              <ToastContainer />
+              <App />
+            </TagProvider>
+          </CommentsProvider>
+        </ArticlesProvider>
       </AuthProvider>
     </BrowserRouter>
   </StrictMode>
