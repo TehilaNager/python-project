@@ -8,7 +8,6 @@ tagContext.displayName = "Tag";
 
 export function TagProvider({ children }) {
   const [tags, setTags] = useState([]);
-  const [newTagName, setNewTagName] = useState("");
 
   const fetchTags = async () => {
     try {
@@ -23,8 +22,8 @@ export function TagProvider({ children }) {
     fetchTags();
   }, []);
 
-  const createTag = async () => {
-    const name = newTagName.trim();
+  const createTag = async (name) => {
+    name = name.trim();
     if (!name) return;
 
     if (tags.some((tag) => tag.name.toLowerCase() === name.toLowerCase())) {
@@ -40,9 +39,9 @@ export function TagProvider({ children }) {
     try {
       const response = await tagsService.createTag({ name });
       setTags([...tags, response]);
-      setNewTagName("");
     } catch (err) {
       console.error("Error creating tag:", err);
+      throw err;
     }
   };
 
@@ -58,9 +57,7 @@ export function TagProvider({ children }) {
   };
 
   return (
-    <tagContext.Provider
-      value={{ newTagName, setNewTagName, createTag, tags, deleteTag }}
-    >
+    <tagContext.Provider value={{ createTag, tags, deleteTag }}>
       {children}
     </tagContext.Provider>
   );

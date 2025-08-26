@@ -43,6 +43,16 @@ export function ArticlesProvider({ children }) {
     }
   };
 
+  const updateArticle = async (id, values) => {
+    try {
+      const response = await articlesService.updateArticle(id, values);
+      setArticles(articles.map((art) => (art.id === id ? response : art)));
+      return response;
+    } catch (error) {
+      console.error("Error updating article:", error);
+    }
+  };
+
   return (
     <articleContext.Provider
       value={{
@@ -52,6 +62,7 @@ export function ArticlesProvider({ children }) {
         fetchArticleById,
         fetchArticles,
         deleteArticle,
+        updateArticle,
       }}
     >
       {children}

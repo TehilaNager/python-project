@@ -1,8 +1,41 @@
+import { useState } from "react";
 import PageHeader from "../components/common/pageHeader";
 import { useTag } from "../context/tagContext";
+import createTagSchema from "../schemas/createTagSchema";
+import { useFormik } from "formik";
 
 function ManageTags() {
-  const { newTagName, setNewTagName, createTag, tags, deleteTag } = useTag();
+  const { createTag, tags, deleteTag } = useTag();
+  const [serverError, setServerError] = useState("");
+
+  const { resetForm, handleSubmit, getFieldProps, touched, errors } = useFormik(
+    {
+      initialValues: { name: "" },
+      validate: (values) => {
+        const schema = createTagSchema();
+        const { error } = schema.validate(values, { abortEarly: false });
+        if (!error) return {};
+        const errors = {};
+        for (const detail of error.details) {
+          errors[detail.path[0]] = detail.message;
+        }
+        return errors;
+      },
+      onSubmit: async (values) => {
+        try {
+          setServerError("");
+          await createTag(values.name);
+          resetForm();
+        } catch (err) {
+          setServerError(
+            err.response?.data?.name ||
+              err.response?.data?.detail ||
+              "Something went wrong."
+          );
+        }
+      },
+    }
+  );
 
   return (
     <div className="container col-11 col-md-6">
@@ -22,23 +55,26 @@ function ManageTags() {
         Tags are used to categorize your articles. Create new tags here and
         later, when creating an article, you can select which tags apply to it.
       </p>
+      <form onSubmit={handleSubmit} noValidate autoComplete="off">
+        <div className="mb-3 d-flex">
+          <input
+            type="text"
+            className={`form-control ${
+              errors.name && touched.name ? "is-invalid" : ""
+            }`}
+            placeholder="Enter new tag..."
+            {...getFieldProps("name")}
+          />
+          <button type="submit" className="btn btn-primary ms-2">
+            Add Tag
+          </button>
+        </div>
 
-      <div className="mb-3 d-flex">
-        <input
-          type="text"
-          className="form-control"
-          placeholder="Enter new tag..."
-          value={newTagName}
-          onChange={(e) => setNewTagName(e.target.value)}
-        />
-        <button
-          type="button"
-          className="btn btn-primary ms-2"
-          onClick={createTag}
-        >
-          Add Tag
-        </button>
-      </div>
+        {errors.name && touched.name && (
+          <div className="text-danger mb-2">{errors.name}</div>
+        )}
+        {serverError && <div className="alert alert-danger">{serverError}</div>}
+      </form>
 
       <div>
         {tags.length === 0 ? (

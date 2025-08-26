@@ -1,4 +1,4 @@
-import { Link, useParams } from "react-router";
+import { Link, useNavigate, useParams } from "react-router";
 import { useEffect, useState } from "react";
 import { useComments } from "../context/commentContext";
 import { useAuth } from "../context/authContext";
@@ -14,6 +14,7 @@ function ArticleDetails() {
   const { isLoggedIn, isAdmin, getUser } = useAuth();
   const { id } = useParams();
   const admin = isAdmin();
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchArticleById(id);
@@ -25,10 +26,13 @@ function ArticleDetails() {
         <Link to={"/"} className="back-btn">
           &larr; Back
         </Link>
-        {/* להפעיל את כפתור edit */}
-        {admin && (
+        {admin && article?.id && (
           <div>
-            <button type="button" className="btn btn-warning mx-2">
+            <button
+              type="button"
+              className="btn btn-warning mx-2"
+              onClick={() => navigate(`/update-article/${article?.id}`)}
+            >
               Edit
             </button>
             <button
