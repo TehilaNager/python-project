@@ -1,9 +1,11 @@
+import { useArticles } from "../context/articleContext";
 import { useAuth } from "../context/authContext";
 import Logo from "./common/logo";
 import { NavLink } from "react-router";
 
 function Navbar() {
   const { isLoggedIn, logout, getUser, isAdmin } = useAuth();
+  const { term, setTerm, handleSearch } = useArticles();
   const userName = getUser()?.username;
   const admin = isAdmin();
 
@@ -35,7 +37,11 @@ function Navbar() {
         </button>
 
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
-          <form className="d-flex position-relative me-4 ms-auto" role="search">
+          <form
+            className="d-flex position-relative me-4 ms-auto"
+            role="search"
+            onSubmit={handleSearch}
+          >
             <i
               className="bi bi-search text-secondary position-absolute"
               style={{
@@ -49,6 +55,8 @@ function Navbar() {
               type="search"
               placeholder="Search..."
               aria-label="Search"
+              value={term}
+              onChange={(e) => setTerm(e.target.value)}
             />
             <button className="btn btn-outline-warning ms-3" type="submit">
               Search

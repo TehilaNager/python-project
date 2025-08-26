@@ -5,7 +5,7 @@ import { Link } from "react-router";
 import { useAuth } from "../context/authContext";
 
 function BlogSphere() {
-  const { articles } = useArticles();
+  const { filtered, searchedTerm } = useArticles();
   const { isAdmin } = useAuth();
   const admin = isAdmin();
 
@@ -14,8 +14,12 @@ function BlogSphere() {
       <PageHeader title="All Articles" classTitle="my-5 text-left fw-bold" />
 
       <div className="d-flex justify-content-evenly flex-wrap">
-        {articles.length > 0 ? (
-          articles.map((card) => <Card key={card.id} card={card} />)
+        {filtered.length > 0 ? (
+          filtered.map((card) => <Card key={card.id} card={card} />)
+        ) : searchedTerm ? (
+          <p className="fs-3">
+            No articles found for <strong>"{searchedTerm}"</strong>.
+          </p>
         ) : (
           <p className="fs-3">No articles...</p>
         )}
