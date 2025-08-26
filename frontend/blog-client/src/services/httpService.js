@@ -130,10 +130,6 @@ function setDefaultHeaders(headerName, value) {
     else delete axios.defaults.headers.common[headerName];
 }
 
-// -----------------------------------------------------------
-// Simpler Request Interceptor
-// -----------------------------------------------------------
-// This interceptor only attaches the token. It does no complex logic.
 axios.interceptors.request.use(
     config => {
         const token = localStorage.getItem("access");
@@ -145,10 +141,6 @@ axios.interceptors.request.use(
     error => Promise.reject(error)
 );
 
-// -----------------------------------------------------------
-// Robust Reactive Token Refresh (Response Interceptor)
-// -----------------------------------------------------------
-// This interceptor handles token refresh only when the server says it's needed.
 axios.interceptors.response.use(
     response => response,
     async error => {
@@ -156,7 +148,6 @@ axios.interceptors.response.use(
         const status = error.response?.status;
         const data = error.response?.data;
 
-        // Check for 401/403 errors and make sure we're not stuck in a loop
         const isTokenExpiredError =
             (status === 401) ||
             (status === 403 && data?.messages?.some(msg => msg.message.includes("Token is expired")));
@@ -164,7 +155,6 @@ axios.interceptors.response.use(
         if (isTokenExpiredError && !originalRequest._retry) {
             originalRequest._retry = true;
 
-            // Handle race conditions by queueing requests
             if (isRefreshing) {
                 return new Promise(function (resolve, reject) {
                     failedQueue.push({ resolve, reject });

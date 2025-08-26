@@ -20,13 +20,11 @@ async function fetchCommentsByArticle(id) {
     return response.data;
 };
 
-// יש הרשאה רק למנהל ולמי שיצר, צריך בדיקה
 async function deleteComment(id) {
     await httpService.delete(`/comments/${id}/`);
     return { message: "The comment was successfully deleted." };
 };
 
-// יש הרשאה רק למנהל ולמי שיצר, צריך בדיקה
 async function updateComment(id, values) {
     const response = await httpService.put(`/comments/${id}/`, values);
     return response.data;
