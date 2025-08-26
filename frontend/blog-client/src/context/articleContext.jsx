@@ -63,6 +63,7 @@ export function ArticlesProvider({ children }) {
         fetchArticles,
         deleteArticle,
         updateArticle,
+        setArticles,
       }}
     >
       {children}
