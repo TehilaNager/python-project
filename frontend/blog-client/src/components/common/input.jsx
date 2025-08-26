@@ -11,6 +11,7 @@ function Input({ label, error, type = "text", ...rest }) {
         />
       ) : (
         <input
+          type={type}
           className={`form-control ${error ? "is-invalid" : ""}`}
           id={rest.name}
           placeholder={rest.name}

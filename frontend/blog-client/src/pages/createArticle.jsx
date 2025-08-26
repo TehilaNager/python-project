@@ -8,7 +8,7 @@ import { useArticles } from "../context/articleContext";
 import { errorFeedback, successFeedback } from "../helpers/feedback";
 import { useState } from "react";
 import Select from "react-select";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 
 function CreateArticle() {
   const navigate = useNavigate();
@@ -152,24 +152,48 @@ function CreateArticle() {
           Tags:
         </label>
 
-        <Select
-          isMulti
-          options={tagsOptions}
-          className="mb-5"
-          classNamePrefix="select"
-          placeholder="Select tags..."
-          value={tagsOptions.filter((option) =>
-            getFieldProps("tags").value.includes(option.value)
-          )}
-          onChange={(selectedOptions) =>
-            setFieldValue(
-              "tags",
-              selectedOptions
-                ? selectedOptions.map((option) => option.value)
-                : []
-            )
-          }
-        />
+        {tags.length === 0 ? (
+          <div className="alert alert-info">
+            <span>
+              No tags available. You can create them in{" "}
+              <strong>Manage Tags</strong> if you’d like to categorize your
+              article.{" "}
+            </span>
+            <button
+              type="button"
+              className="btn btn-sm btn-primary rounded-5"
+              onClick={() => navigate("/manage-tags")}
+            >
+              Go to Manage Tags
+            </button>
+          </div>
+        ) : (
+          <>
+            <Select
+              isMulti
+              options={tagsOptions}
+              className="mb-2"
+              classNamePrefix="select"
+              placeholder="Select tags..."
+              value={tagsOptions.filter((option) =>
+                getFieldProps("tags").value.includes(option.value)
+              )}
+              onChange={(selectedOptions) =>
+                setFieldValue(
+                  "tags",
+                  selectedOptions
+                    ? selectedOptions.map((option) => option.value)
+                    : []
+                )
+              }
+            />
+
+            <small className="text-muted d-block mb-3">
+              You can always add more tags in{" "}
+              <Link to="/manage-tags">Manage Tags</Link>.
+            </small>
+          </>
+        )}
 
         {touched.tags && errors.tags && (
           <div className="text-danger">{errors.tags}</div>

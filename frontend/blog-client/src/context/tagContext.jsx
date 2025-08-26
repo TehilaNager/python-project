@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import tagsService from "../services/tagService";
 import Swal from "sweetalert2";
+import { questionFeedback } from "../helpers/feedback";
 
 const tagContext = createContext();
 tagContext.displayName = "Tag";
@@ -47,6 +48,8 @@ export function TagProvider({ children }) {
 
   const deleteTag = async (id) => {
     try {
+      const confirmed = await questionFeedback("The tag has been deleted!");
+      if (!confirmed) return;
       await tagsService.deleteTag(id);
       setTags(tags.filter((tag) => tag.id !== id));
     } catch (err) {

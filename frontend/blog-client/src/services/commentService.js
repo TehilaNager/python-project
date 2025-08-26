@@ -10,8 +10,8 @@ async function getCommentById(id) {
     return response.data;
 };
 
-async function createComment(id, value) {
-    const response = await httpService.post(`/articles/${id}/comments/`, value);
+async function createComment(id, values) {
+    const response = await httpService.post(`/articles/${id}/comments/`, values);
     return response.data;
 };
 
@@ -20,10 +20,16 @@ async function fetchCommentsByArticle(id) {
     return response.data;
 };
 
-// יש הרשאה רק למנהל, צריך בדיקה מהטוקן שזה מנהל
+// יש הרשאה רק למנהל ולמי שיצר, צריך בדיקה
 async function deleteComment(id) {
     await httpService.delete(`/comments/${id}/`);
     return { message: "The comment was successfully deleted." };
+};
+
+// יש הרשאה רק למנהל ולמי שיצר, צריך בדיקה
+async function updateComment(id, values) {
+    const response = await httpService.put(`/comments/${id}/`, values);
+    return response.data;
 };
 
 
@@ -32,7 +38,8 @@ const commentsService = {
     getCommentById,
     createComment,
     fetchCommentsByArticle,
-    deleteComment
+    deleteComment,
+    updateComment
 };
 
 export default commentsService;

@@ -1,21 +1,22 @@
 import { Link, useParams } from "react-router";
-import articlesService from "../services/articleService";
 import { useEffect, useState } from "react";
 import { useComments } from "../context/commentContext";
 import { useAuth } from "../context/authContext";
+import { useArticles } from "../context/articleContext";
+import handleEditComment from "../helpers/handleEditComment";
+import handleCreateComment from "../helpers/handleCreateComment";
 
 function ArticleDetails() {
-  const [article, setArticle] = useState(null);
-  const { comments } = useComments();
-  const { isLoggedIn } = useAuth();
+  const [newComment, setNewComment] = useState("");
+  const { article, fetchArticleById, deleteArticle } = useArticles();
+  const { comments, deleteComment, updateComment, createComment } =
+    useComments();
+  const { isLoggedIn, isAdmin, getUser } = useAuth();
   const { id } = useParams();
+  const admin = isAdmin();
 
   useEffect(() => {
-    const fetchArticleById = async () => {
-      const response = await articlesService.getArticleById(id);
-      setArticle(response);
-    };
-    fetchArticleById();
+    fetchArticleById(id);
   }, [id]);
 
   return (
@@ -24,15 +25,21 @@ function ArticleDetails() {
         <Link to={"/"} className="back-btn">
           &larr; Back
         </Link>
-        {/* רק מנהלים */}
-        <div>
-          <button type="button" className="btn btn-warning mx-2">
-            Edit
-          </button>
-          <button type="button" className="btn btn-danger mx-2">
-            Delete
-          </button>
-        </div>
+        {/* להפעיל את כפתור edit */}
+        {admin && (
+          <div>
+            <button type="button" className="btn btn-warning mx-2">
+              Edit
+            </button>
+            <button
+              type="button"
+              className="btn btn-danger mx-2"
+              onClick={() => deleteArticle(article.id)}
+            >
+              Delete
+            </button>
+          </div>
+        )}
       </div>
 
       <div className="article-card">
@@ -99,15 +106,27 @@ function ArticleDetails() {
                     </small>
                   </div>
                   <p className="mb-0">{comment.text}</p>
-
-                  {/* רק מנהלים */}
-                  <div className="d-flex justify-content-end mt-1">
-                    <button
-                      type="button"
-                      className="btn btn-danger btn-sm ms-auto"
-                    >
-                      Delete
-                    </button>
+                  <div className="d-flex justify-content-end mt-1 gap-2">
+                    {comment.username === getUser()?.username && (
+                      <button
+                        type="button"
+                        className="btn btn-warning btn-sm"
+                        onClick={() =>
+                          handleEditComment(comment, article.id, updateComment)
+                        }
+                      >
+                        Edit
+                      </button>
+                    )}
+                    {(admin || comment.username === getUser()?.username) && (
+                      <button
+                        type="button"
+                        className="btn btn-danger btn-sm"
+                        onClick={() => deleteComment(comment.id)}
+                      >
+                        Delete
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>
@@ -122,8 +141,22 @@ function ArticleDetails() {
               rows="3"
               placeholder="Write a comment..."
               style={{ resize: "none" }}
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
             ></textarea>
-            <button className="btn btn-primary">Submit</button>
+            <button
+              className="btn btn-primary"
+              onClick={() =>
+                handleCreateComment({
+                  newComment,
+                  articleId: article.id,
+                  createComment,
+                  setNewComment,
+                })
+              }
+            >
+              Submit
+            </button>
           </div>
         )}
       </div>

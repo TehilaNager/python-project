@@ -34,7 +34,7 @@ async function updateArticle(id, values) {
 
 // יש הרשאה רק למנהל, צריך בדיקה מהטורן שזה מנהל
 async function deleteArticle(id) {
-    await httpService.delete(`/articles/${id}`);
+    await httpService.delete(`/articles/${id}/`);
     return { message: "The article was successfully deleted." };
 };
 
