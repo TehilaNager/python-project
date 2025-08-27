@@ -12,32 +12,37 @@ function Navbar() {
   return (
     <nav className="navbar navbar-expand-md navbar-dark bg-dark shadow-sm fixed-top">
       <div className="container">
-        <Logo />
+        <div className="d-flex align-items-center">
+          <Logo />
 
-        {admin && (
-          <NavLink
-            to="/manage-tags"
-            className="nav-link fw-semibold fs-6 px-4 text-white d-md-block d-none"
-            style={{ fontSize: "1.2rem" }}
+          {admin && (
+            <NavLink
+              to="/manage-tags"
+              className="nav-link fw-semibold fs-6 px-4 text-white d-md-block d-none"
+              style={{ fontSize: "1.2rem" }}
+            >
+              Manage Tags
+            </NavLink>
+          )}
+
+          <button
+            className="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent"
+            href="#navbarSupportedContent"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
           >
-            Manage Tags
-          </NavLink>
-        )}
+            <span className="navbar-toggler-icon"></span>
+          </button>
+        </div>
 
-        <button
-          className="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarSupportedContent"
-          aria-controls="navbarSupportedContent"
-          href="#navbarSupportedContent"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
+        <div
+          className="collapse navbar-collapse flex-grow-0"
+          id="navbarSupportedContent"
         >
-          <span className="navbar-toggler-icon"></span>
-        </button>
-
-        <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <div className="d-flex p-2 flex-column flex-md-row gap-3 justify-content-end">
             <form
               className="d-flex position-relative me-4"
