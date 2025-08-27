@@ -33,48 +33,53 @@ class Command(BaseCommand):
 
         tag_python, _ = Tag.objects.get_or_create(name="Python")
         tag_django, _ = Tag.objects.get_or_create(name="Django")
+        tag_web, _ = Tag.objects.get_or_create(name="Web Development")
+        tag_database, _ = Tag.objects.get_or_create(name="Database")
 
-        article1, _ = Article.objects.get_or_create(
-            title="First Article",
-            defaults={
-                "author": admin_profile,
+        articles_data = [
+            {
+                "title": "First Article",
                 "text": "This is the content of the first article - an example of database seeding.",
-                "status": "published",
-                "created_at": timezone.now(),
+                "tags": [tag_python, tag_web],
             },
-        )
-        article1.tags.add(tag_python)
-
-        article2, _ = Article.objects.get_or_create(
-            title="Second Article",
-            defaults={
-                "author": admin_profile,
+            {
+                "title": "Second Article",
                 "text": "This is the content of the second article - another example.",
-                "status": "published",
-                "created_at": timezone.now(),
+                "tags": [tag_django, tag_web],
             },
-        )
-        article2.tags.add(tag_django)
+            {
+                "title": "Third Article",
+                "text": "This is the content of the third article - more example content.",
+                "tags": [tag_python, tag_database],
+            },
+            {
+                "title": "Fourth Article",
+                "text": "This is the content of the fourth article - even more example content.",
+                "tags": [tag_django, tag_database],
+            },
+        ]
 
-        Comment.objects.get_or_create(
-            article=article1,
-            author=regular_profile,
-            text="First comment on the first article",
-        )
-        Comment.objects.get_or_create(
-            article=article1,
-            author=regular_profile,
-            text="Another comment on the first article",
-        )
-        Comment.objects.get_or_create(
-            article=article2,
-            author=regular_profile,
-            text="First comment on the second article",
-        )
-        Comment.objects.get_or_create(
-            article=article2,
-            author=regular_profile,
-            text="Another comment on the second article",
-        )
+        for article_data in articles_data:
+            article, _ = Article.objects.get_or_create(
+                title=article_data["title"],
+                defaults={
+                    "author": admin_profile,
+                    "text": article_data["text"],
+                    "status": "published",
+                    "created_at": timezone.now(),
+                },
+            )
+            article.tags.set(article_data["tags"])
+
+            Comment.objects.get_or_create(
+                article=article,
+                author=regular_profile,
+                text=f"First comment on {article.title}",
+            )
+            Comment.objects.get_or_create(
+                article=article,
+                author=regular_profile,
+                text=f"Second comment on {article.title}",
+            )
 
         self.stdout.write(self.style.SUCCESS("Database seeded successfully!"))
