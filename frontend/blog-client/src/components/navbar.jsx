@@ -37,108 +37,107 @@ function Navbar() {
           <span className="navbar-toggler-icon"></span>
         </button>
 
-        <div
-          className="collapse navbar-collapse d-flex p-2 flex-column flex-md-row gap-3 justify-content-end"
-          id="navbarSupportedContent"
-        >
-          <form
-            className="d-flex position-relative me-4"
-            role="search"
-            onSubmit={handleSearch}
-          >
-            <i
-              className="bi bi-search text-secondary position-absolute"
-              style={{
-                top: "50%",
-                left: "10px",
-                transform: "translateY(-50%)",
-              }}
-            ></i>
-            <input
-              className="form-control ps-5"
-              type="search"
-              placeholder="Search..."
-              aria-label="Search"
-              value={term}
-              onChange={(e) => setTerm(e.target.value)}
-            />
-            <button className="btn btn-outline-warning ms-3" type="submit">
-              Search
-            </button>
-          </form>
-
-          {admin && (
-            <NavLink
-              to="/manage-tags"
-              className="nav-link fw-semibold fs-6 px-4 text-white d-md-none"
-              style={{ fontSize: "1.2rem" }}
+        <div className="collapse navbar-collapse" id="navbarSupportedContent">
+          <div className="d-flex p-2 flex-column flex-md-row gap-3 justify-content-end">
+            <form
+              className="d-flex position-relative me-4"
+              role="search"
+              onSubmit={handleSearch}
             >
-              Manage Tags
-            </NavLink>
-          )}
+              <i
+                className="bi bi-search text-secondary position-absolute"
+                style={{
+                  top: "50%",
+                  left: "10px",
+                  transform: "translateY(-50%)",
+                }}
+              ></i>
+              <input
+                className="form-control ps-5"
+                type="search"
+                placeholder="Search..."
+                aria-label="Search"
+                value={term}
+                onChange={(e) => setTerm(e.target.value)}
+              />
+              <button className="btn btn-outline-warning ms-3" type="submit">
+                Search
+              </button>
+            </form>
 
-          <ul className="navbar-nav mb-2 mb-md-0">
-            {isLoggedIn ? (
-              <div
-                className="dropdown text-center"
-                style={{ display: "inline-block", position: "relative" }}
+            {admin && (
+              <NavLink
+                to="/manage-tags"
+                className="nav-link fw-semibold fs-6 px-4 text-white d-md-none"
+                style={{ fontSize: "1.2rem" }}
               >
-                <img
-                  src="https://cdn-icons-png.flaticon.com/512/1896/1896513.png"
-                  alt="Profile"
-                  className="dropdown-toggle mx-3"
-                  data-bs-toggle="dropdown"
-                  style={{
-                    width: "50px",
-                    cursor: "pointer",
-                    borderRadius: "50%",
-                  }}
-                />
-                <ul
-                  className="dropdown-menu shadow text-center"
-                  style={{
-                    position: "absolute",
-                    top: "60px",
-                    left: "50%",
-                    transform: "translateX(-50%)",
-                  }}
-                >
-                  <li className="border-bottom text-primary-emphasis fw-semibold py-2 rounded-top">
-                    <i className="bi bi-person-circle me-1"></i> {userName}
-                  </li>
-                  <li>
-                    <button
-                      className="dropdown-item text-danger px-4 py-2"
-                      onClick={logout}
-                    >
-                      <i className="bi bi-box-arrow-right me-1"></i> Log out
-                    </button>
-                  </li>
-                </ul>
-              </div>
-            ) : (
-              <>
-                <li className="nav-item">
-                  <NavLink
-                    className="nav-link fw-semibold fs-6 px-4"
-                    to="/login"
-                    style={{ fontSize: "1.05rem" }}
-                  >
-                    <i className="bi bi-person me-1"></i> Login
-                  </NavLink>
-                </li>
-                <li className="nav-item">
-                  <NavLink
-                    className="nav-link fw-semibold fs-6 px-4"
-                    to="/register"
-                    style={{ fontSize: "1.05rem" }}
-                  >
-                    <i className="bi bi-person-plus me-1"></i> Register
-                  </NavLink>
-                </li>
-              </>
+                Manage Tags
+              </NavLink>
             )}
-          </ul>
+
+            <ul className="navbar-nav mb-2 mb-md-0">
+              {isLoggedIn ? (
+                <div
+                  className="dropdown text-center"
+                  style={{ display: "inline-block", position: "relative" }}
+                >
+                  <img
+                    src="https://cdn-icons-png.flaticon.com/512/1896/1896513.png"
+                    alt="Profile"
+                    className="dropdown-toggle mx-3"
+                    data-bs-toggle="dropdown"
+                    style={{
+                      width: "50px",
+                      cursor: "pointer",
+                      borderRadius: "50%",
+                    }}
+                  />
+                  <ul
+                    className="dropdown-menu shadow text-center"
+                    style={{
+                      position: "absolute",
+                      top: "60px",
+                      left: "50%",
+                      transform: "translateX(-50%)",
+                    }}
+                  >
+                    <li className="border-bottom text-primary-emphasis fw-semibold py-2 rounded-top">
+                      <i className="bi bi-person-circle me-1"></i> {userName}
+                    </li>
+                    <li>
+                      <button
+                        className="dropdown-item text-danger px-4 py-2"
+                        onClick={logout}
+                      >
+                        <i className="bi bi-box-arrow-right me-1"></i> Log out
+                      </button>
+                    </li>
+                  </ul>
+                </div>
+              ) : (
+                <>
+                  <li className="nav-item">
+                    <NavLink
+                      className="nav-link fw-semibold fs-6 px-4"
+                      to="/login"
+                      style={{ fontSize: "1.05rem" }}
+                    >
+                      <i className="bi bi-person me-1"></i> Login
+                    </NavLink>
+                  </li>
+                  <li className="nav-item">
+                    <NavLink
+                      className="nav-link fw-semibold fs-6 px-4"
+                      to="/register"
+                      style={{ fontSize: "1.05rem" }}
+                    >
+                      <i className="bi bi-person-plus me-1"></i> Register
+                    </NavLink>
+                  </li>
+                </>
+              )}
+            </ul>
+          </div>
         </div>
       </div>
     </nav>
