@@ -80,7 +80,7 @@ WSGI_APPLICATION = "blogapi.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": config("DB_ENGINE"),
-        "NAME": config("DB_NAME"),
+        "NAME": BASE_DIR / config("DB_NAME"),
     }
 }
 
